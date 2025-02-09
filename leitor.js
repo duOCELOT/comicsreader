@@ -12,22 +12,35 @@ async function carregarQuadrinho() {
         const paginasContainer = document.getElementById('paginas-container');
         const paginas = [];
 
-        // Simular a leitura dos arquivos de página (pag (1).jpg, pag (2).jpg, etc.)
+        // Simular a leitura dos arquivos de página (pag (1).jpg, pag (1).png, etc.)
         for (let i = 1; ; i++) {
-            const pagina = `quadrinhos/${pastaQuadrinho}/pag (${i}).jpg`; // Note the space before "("
-            const img = new Image();
-            img.src = pagina;
+            const paginaBase = `quadrinhos/${pastaQuadrinho}/pag (${i})`;
+            const extensoes = ['.jpg', '.png']; // Suporta .jpg e .png
 
-            // Verificar se a imagem existe
-            const imagemExiste = await new Promise((resolve) => {
-                img.onload = () => resolve(true);
-                img.onerror = () => resolve(false);
-            });
+            let paginaEncontrada = false;
 
-            if (imagemExiste) {
-                paginas.push(pagina);
-            } else {
-                break; // Parar o loop se a imagem não existir
+            // Tenta carregar a página com cada extensão
+            for (const extensao of extensoes) {
+                const pagina = `${paginaBase}${extensao}`;
+                const img = new Image();
+                img.src = pagina;
+
+                // Verificar se a imagem existe
+                const imagemExiste = await new Promise((resolve) => {
+                    img.onload = () => resolve(true);
+                    img.onerror = () => resolve(false);
+                });
+
+                if (imagemExiste) {
+                    paginas.push(pagina);
+                    paginaEncontrada = true;
+                    break; // Sai do loop de extensões se a imagem for encontrada
+                }
+            }
+
+            // Se nenhuma imagem for encontrada, para o loop
+            if (!paginaEncontrada) {
+                break;
             }
         }
 
