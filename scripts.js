@@ -40,12 +40,15 @@ function gerarCarrossel(quadrinhos) {
 // Função para gerar os thumbnails
 function gerarThumbnails(quadrinhos) {
     const thumbnailsContainer = document.getElementById('thumbnails-container');
-    thumbnailsContainer.innerHTML = quadrinhos.map((quadrinho, index) => `
-        <div class="thumbnail-item" data-index="${index}">
-            <img src="${quadrinho.capa}" alt="${quadrinho.titulo}" onclick="abrirQuadrinho('${quadrinho.pasta}')">
-            <p>${quadrinho.titulo}</p>
-        </div>
-    `).join('');
+    thumbnailsContainer.innerHTML = quadrinhos.map((quadrinho, index) => {
+        const capaPath = quadrinho.capa.endsWith('.jpg') || quadrinho.capa.endsWith('.png') ? quadrinho.capa : `${quadrinho.capa}.jpg`;
+        return `
+            <div class="thumbnail-item" data-index="${index}">
+                <img src="${capaPath}" alt="${quadrinho.titulo}" onclick="abrirQuadrinho('${quadrinho.pasta}')">
+                <p>${quadrinho.titulo}</p>
+            </div>
+        `;
+    }).join('');
 }
 
 // Função para abrir um quadrinho

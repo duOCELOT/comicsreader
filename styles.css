@@ -162,3 +162,19 @@ footer {
     width: 100%;
     bottom: 0;
 }
+
+/* Comic Reader Styles */
+.leitor {
+    max-width: 100%;
+    overflow-x: auto;
+    padding: 20px;
+    text-align: center;
+}
+
+.comic-page {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}

@@ -10,7 +10,9 @@ async function carregarQuadrinho() {
 
         // Carregar páginas do quadrinho
         const paginasContainer = document.getElementById('paginas-container');
-        const paginas = [];
+        paginasContainer.innerHTML = paginas.map(pagina => `
+            <img src="${pagina}" alt="Página" class="comic-page">
+        `).join('');
 
         // Simular a leitura dos arquivos de página (pag (1).jpg, pag (1).png, etc.)
         for (let i = 1; ; i++) {
