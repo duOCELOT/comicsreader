@@ -7,7 +7,7 @@ const quadrinhos = [
     },
     {
         pasta: 'quadrinho2',
-        capa: 'quadrinhos/quadrinho2/capa.jpg',
+        capa: 'quadrinhos/quadrinho2/capa.png',
         info: 'quadrinhos/quadrinho2/info.json'
     },
     // Adicione mais quadrinhos conforme necessário
