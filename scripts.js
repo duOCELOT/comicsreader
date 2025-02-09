@@ -10,6 +10,16 @@ const quadrinhos = [
         capa: 'quadrinhos/quadrinho2/capa.png',
         info: 'quadrinhos/quadrinho2/info.json'
     },
+    {
+        pasta: 'quadrinho3',
+        capa: 'quadrinhos/quadrinho1/capa.jpg',
+        info: 'quadrinhos/quadrinho1/info.json'
+    },
+    {
+        pasta: 'quadrinho4',
+        capa: 'quadrinhos/quadrinho2/capa.png',
+        info: 'quadrinhos/quadrinho2/info.json'
+    },
     // Adicione mais quadrinhos conforme necessário
 ];
 
