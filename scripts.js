@@ -1,13 +1,13 @@
-// Lista de quadrinhos (simulando a leitura de uma pasta)
+// Lista de quadrinhos (subpastas dentro de "quadrinhos")
 const quadrinhos = [
     {
         pasta: 'quadrinho1',
-        capa: 'quadrinhos/quadrinho1/capa.jpg',
+        capa: 'quadrinhos/quadrinho1/capa.jpg', // ou capa.png
         info: 'quadrinhos/quadrinho1/info.json'
     },
     {
         pasta: 'quadrinho2',
-        capa: 'quadrinhos/quadrinho2/capa.jpg',
+        capa: 'quadrinhos/quadrinho2/capa.jpg', // ou capa.png
         info: 'quadrinhos/quadrinho2/info.json'
     },
     // Adicione mais quadrinhos conforme necessário
@@ -15,9 +15,14 @@ const quadrinhos = [
 
 // Função para carregar os dados de um quadrinho
 async function carregarQuadrinho(quadrinho) {
-    const response = await fetch(quadrinho.info);
-    const data = await response.json();
-    return { ...quadrinho, ...data };
+    try {
+        const response = await fetch(quadrinho.info);
+        const data = await response.json();
+        return { ...quadrinho, ...data };
+    } catch (error) {
+        console.error(`Erro ao carregar o quadrinho ${quadrinho.pasta}:`, error);
+        return null;
+    }
 }
 
 // Função para gerar o carrossel
@@ -49,8 +54,9 @@ function abrirQuadrinho(pasta) {
 // Função principal para carregar a página
 async function carregarPagina() {
     const quadrinhosCarregados = await Promise.all(quadrinhos.map(carregarQuadrinho));
-    gerarCarrossel(quadrinhosCarregados);
-    gerarThumbnails(quadrinhosCarregados);
+    const quadrinhosValidos = quadrinhosCarregados.filter(q => q !== null); // Filtra quadrinhos válidos
+    gerarCarrossel(quadrinhosValidos);
+    gerarThumbnails(quadrinhosValidos);
 }
 
 // Inicializar
