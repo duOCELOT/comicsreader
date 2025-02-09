@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comics Reader</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Comics Reader</h1>
+    </header>
+
+    <!-- Carrossel de Capas -->
+    <section class="carrossel">
+        <div class="carrossel-container" id="carrossel-container"></div>
+        <button class="carrossel-btn prev" onclick="moverCarrossel(-1)">&#10094;</button>
+        <button class="carrossel-btn next" onclick="moverCarrossel(1)">&#10095;</button>
+    </section>
+
+    <!-- Thumbnails dos Quadrinhos -->
+    <section class="thumbnails">
+        <h2>Quadrinhos Disponíveis</h2>
+        <div class="thumbnails-container" id="thumbnails-container"></div>
+    </section>
+
+    <footer>
+        <p>&copy; 2023 Comics Reader</p>
+    </footer>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
