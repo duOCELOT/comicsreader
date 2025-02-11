@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    carregarQuadrinho();
+    carregarQuadrinho(); // Call the function once when the DOM is loaded
     setupZoom();
     setupSidebar();
 });
@@ -149,5 +149,3 @@ function esconderSpinner() {
         spinner.style.display = 'none';
     }
 }
-
-carregarQuadrinho();
