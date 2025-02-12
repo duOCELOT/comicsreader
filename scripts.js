@@ -1,87 +1,67 @@
-async function listarQuadrinhos() {
-    const comicListContainer = document.getElementById('comic-list');
-    
+document.addEventListener("DOMContentLoaded", () => {
+    carregarQuadrinhos();
+});
+
+async function carregarQuadrinhos() {
     try {
-        const response = await fetch('quadrinhos/list.json'); // Assuming list.json contains all comic names
-        const comics = await response.json();
-
-        comics.forEach(async (comic) => {
-            const comicCard = document.createElement('div');
-            comicCard.classList.add('comic-card');
-
-            // Load the comic's JSON data
-            const comicDataResponse = await fetch(`quadrinhos/${comic}/pages.json`);
-            const comicData = await comicDataResponse.json();
-
-            const coverImage = document.createElement('img');
-            coverImage.src = `quadrinhos/${comic}/capa.jpg`;
-            coverImage.alt = `Capa de ${comicData.name}`;
+        const response = await fetch("quadrinhos/");
+        if (!response.ok) throw new Error("Erro ao acessar a pasta de quadrinhos");
+        
+        const text = await response.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(text, "text/html");
+        const links = Array.from(doc.querySelectorAll("a"))
+            .map(a => a.href)
+            .filter(href => href.includes("quadrinhos/"));
+        
+        console.log("Pastas de quadrinhos encontradas:", links);
+        
+        const quadrinhos = [];
+        for (let link of links) {
+            const folderName = link.split("/").slice(-2, -1)[0];
+            const jsonPath = `quadrinhos/${folderName}/info.json`;
             
-            const title = document.createElement('h2');
-            title.textContent = comicData.name;
-
-            const description = document.createElement('p');
-            description.textContent = comicData.description;
-
-            const link = document.createElement('a');
-            link.href = `leitor.html?quadrinho=${comic}`;
-            link.textContent = 'Ler Quadrinho';
-
-            comicCard.appendChild(coverImage);
-            comicCard.appendChild(title);
-            comicCard.appendChild(description);
-            comicCard.appendChild(link);
-            
-            comicListContainer.appendChild(comicCard);
-        });
-
+            try {
+                const jsonResponse = await fetch(jsonPath);
+                if (!jsonResponse.ok) throw new Error("JSON não encontrado");
+                
+                const data = await jsonResponse.json();
+                const capaPath = await detectImageFormat(`quadrinhos/${folderName}/capa`);
+                
+                quadrinhos.push({ nome: data.nome, descricao: data.descricao, capa: capaPath, pasta: folderName });
+            } catch (err) {
+                console.warn(`Erro ao carregar JSON de ${folderName}:`, err);
+            }
+        }
+        
+        console.log("Quadrinhos carregados:", quadrinhos);
+        gerarCarrossel(quadrinhos);
     } catch (error) {
         console.error("Erro ao carregar quadrinhos:", error);
     }
 }
 
-async function carregarQuadrinho(pasta) {
-    mostrarSpinner();
-    const readerContainer = document.getElementById('comic-reader-container');
-    
-    try {
-        const response = await fetch(`quadrinhos/${pasta}/pages.json`);
-        if (!response.ok) throw new Error("JSON não encontrado");
-
-        const comicData = await response.json();
-
-        const title = document.createElement('h1');
-        title.textContent = comicData.name;
-        readerContainer.appendChild(title);
-
-        const description = document.createElement('p');
-        description.textContent = comicData.description;
-        readerContainer.appendChild(description);
-
-        const coverImage = document.createElement('img');
-        coverImage.src = `quadrinhos/${pasta}/capa.jpg`;
-        coverImage.alt = 'Capa do Quadrinho';
-        readerContainer.appendChild(coverImage);
-
-        comicData.pages.forEach(page => {
-            const img = document.createElement('img');
-            img.src = `quadrinhos/${pasta}/${page}`;
-            img.alt = `Página ${page}`;
-            readerContainer.appendChild(img);
-        });
-
-    } catch (error) {
-        console.error("Erro ao carregar quadrinho:", error);
-        alert("Erro ao carregar quadrinho!");
-    } finally {
-        esconderSpinner();
+async function detectImageFormat(basePath) {
+    const formatos = ["jpg", "png", "jpeg"];
+    for (let ext of formatos) {
+        const response = await fetch(`${basePath}.${ext}`);
+        if (response.ok) return `${basePath}.${ext}`;
     }
+    console.warn("Nenhuma imagem encontrada para:", basePath);
+    return "placeholder.jpg"; 
 }
 
-function mostrarSpinner() {
-    document.getElementById('loading-spinner').style.display = 'block';
-}
-
-function esconderSpinner() {
-    document.getElementById('loading-spinner').style.display = 'none';
+function gerarCarrossel(quadrinhos) {
+    const container = document.getElementById("carrossel");
+    if (!container) {
+        console.error("Elemento #carrossel não encontrado no HTML");
+        return;
+    }
+    container.innerHTML = quadrinhos.map(q => `
+        <div class="quadrinho">
+            <img src="${q.capa}" alt="${q.nome}">
+            <h3>${q.nome}</h3>
+            <p>${q.descricao}</p>
+        </div>
+    `).join("\n");
 }
