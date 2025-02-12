@@ -1,3 +1,7 @@
+document.addEventListener('DOMContentLoaded', () => {
+    carregarQuadrinhos();
+});
+
 async function carregarQuadrinhos() {
     mostrarSpinner();
 
