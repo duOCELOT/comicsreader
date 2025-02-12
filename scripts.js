@@ -81,7 +81,7 @@ function gerarThumbnails(quadrinhos) {
 
 // Função para abrir um quadrinho
 function abrirQuadrinho(pasta) {
-    window.location.href = `leitor.html?quadrinho=${pasta}`;
+    window.location.href = `leitor.html?quadrinhos=${pasta}`;
 }
 
 // Funções para o loading spinner
