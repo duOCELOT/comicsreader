@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,32 +7,78 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1 id="titulo-quadrinho"></h1>
-        <button id="toggle-sidebar">Mostrar/Ocultar Lista</button>
-    </header>
-
-    <div class="container">
-        <!-- Left Side: Full-page view -->
-        <div class="full-page-view">
-            <img id="comic-page" src="" alt="Página" class="comic-page">
-        </div>
-
-        <!-- Middle: Interactive zoom area -->
-        <div class="zoom-area">
-            <div class="zoom-box"></div>
-        </div>
-
-        <!-- Right Side: Vertical scrollable list -->
-        <div class="sidebar" id="sidebar">
-            <div class="sidebar-content" id="sidebar-content"></div>
-        </div>
+    <div id="loading-spinner" style="display: none;">Carregando...</div>
+    <div id="comic-reader-container">
+        <!-- Aqui serão exibidas as páginas do quadrinho -->
     </div>
 
-    <footer>
-        <p>&copy; 2023 Comics Reader</p>
-    </footer>
+    <script src="scripts.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const quadrinho = params.get('quadrinho');
+            if (quadrinho) {
+                carregarQuadrinho(quadrinho);
+            } else {
+                alert('Quadrinho não encontrado!');
+            }
+        });
 
-    <script src="leitor.js"></script>
+        async function carregarQuadrinho(pasta) {
+            mostrarSpinner();
+
+            try {
+                // Carregar a capa do quadrinho
+                const capaResponse = await fetch(`quadrinhos/${pasta}/capa.jpg`);
+                if (!capaResponse.ok) throw new Error("Capa não encontrada");
+                
+                const capaImg = document.createElement('img');
+                capaImg.src = `quadrinhos/${pasta}/capa.jpg`;
+                capaImg.alt = 'Capa do Quadrinho';
+                document.getElementById('comic-reader-container').appendChild(capaImg);
+
+                // Carregar as páginas do quadrinho
+                const response = await fetch(`quadrinhos/${pasta}/pages.json`);
+                const pages = await response.json();
+                
+                console.log('Páginas carregadas:', pages);
+
+                // Exibir as páginas do quadrinho
+                exibirPaginas(pages, pasta);
+            } catch (error) {
+                console.error('Erro ao carregar o quadrinho:', error);
+                alert('Erro ao carregar o quadrinho!');
+            } finally {
+                esconderSpinner();
+            }
+        }
+
+        function exibirPaginas(pages, pasta) {
+            const comicReaderContainer = document.getElementById('comic-reader-container');
+
+            // Exibir cada página do quadrinho
+            pages.forEach(page => {
+                const img = document.createElement('img');
+                img.src = `quadrinhos/${pasta}/${page}`;
+                img.alt = `Página ${page}`;
+                comicReaderContainer.appendChild(img);
+            });
+        }
+
+        // Funções para o loading spinner
+        function mostrarSpinner() {
+            const spinner = document.getElementById('loading-spinner');
+            if (spinner) {
+                spinner.style.display = 'block';
+            }
+        }
+
+        function esconderSpinner() {
+            const spinner = document.getElementById('loading-spinner');
+            if (spinner) {
+                spinner.style.display = 'none';
+            }
+        }
+    </script>
 </body>
 </html>
