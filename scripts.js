@@ -19,6 +19,14 @@ async function carregarQuadrinhos() {
 
         console.log('Pastas de quadrinhos encontradas:', folders);
 
+        // Verifique se as pastas de quadrinhos estão acessíveis
+        for (const folder of folders) {
+            console.log(`Pasta encontrada: ${folder}`);
+            const infoPath = `quadrinhos/${folder}/info.json`;
+            const capaPath = await detectImageFormat(`quadrinhos/${folder}/capa`);
+            console.log(`Info JSON: ${infoPath}, Capa: ${capaPath}`);
+        }
+
         // Carregar os dados de cada quadrinho
         const quadrinhos = await Promise.all(folders.map(async (pasta) => {
             const infoPath = `quadrinhos/${pasta}/info.json`;
@@ -38,7 +46,6 @@ async function carregarQuadrinhos() {
     }
 }
 
-// Função para detectar o formato da imagem (jpg, png, etc.)
 async function detectImageFormat(basePath) {
     const formats = ['.jpg', '.png', '.jpeg']; // Adicione mais formatos se necessário
     for (const format of formats) {
