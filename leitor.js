@@ -12,9 +12,9 @@ async function carregarQuadrinho() {
         const pastaQuadrinho = params.get('quadrinho');
         console.log(`Carregando quadrinho: ${pastaQuadrinho}`);
 
-        // Verificar se o parâmetro está presente
-        if (!pastaQuadrinho) {
-            throw new Error('Nenhum quadrinho especificado na URL.');
+        // Verificar se o parâmetro está presente e é válido
+        if (!pastaQuadrinho || pastaQuadrinho.includes('/')) {
+            throw new Error('Nome do quadrinho inválido ou não especificado na URL.');
         }
 
         // Carregar informações do quadrinho
@@ -107,6 +107,11 @@ function setupZoom() {
     const comicPage = document.getElementById('comic-page');
     const zoomBox = document.querySelector('.zoom-box');
 
+    if (!comicPage || !zoomBox) {
+        console.error('Elementos do zoom não encontrados.');
+        return;
+    }
+
     comicPage.addEventListener('mousemove', (e) => {
         const rect = comicPage.getBoundingClientRect();
         const x = e.clientX - rect.left;
@@ -128,6 +133,11 @@ function setupZoom() {
 function setupSidebar() {
     const toggleButton = document.getElementById('toggle-sidebar');
     const sidebar = document.getElementById('sidebar');
+
+    if (!toggleButton || !sidebar) {
+        console.error('Elementos da sidebar não encontrados.');
+        return;
+    }
 
     toggleButton.addEventListener('click', () => {
         sidebar.classList.toggle('hidden');
