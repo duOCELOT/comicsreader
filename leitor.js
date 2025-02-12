@@ -12,6 +12,7 @@ async function carregarQuadrinho() {
         const pastaQuadrinho = params.get('quadrinho');
         console.log(`Carregando quadrinho: ${pastaQuadrinho}`);
 
+        // Verificar se o parâmetro está presente
         if (!pastaQuadrinho) {
             throw new Error('Nenhum quadrinho especificado na URL.');
         }
@@ -43,6 +44,7 @@ async function carregarQuadrinho() {
         carregarSidebar();
     } catch (error) {
         console.error('Erro ao carregar o quadrinho:', error);
+        alert('Erro ao carregar o quadrinho. Verifique o console para mais detalhes.');
     } finally {
         esconderSpinner();
     }
