@@ -13,7 +13,7 @@ async function carregarQuadrinho() {
         console.log(`Carregando quadrinho: ${pastaQuadrinho}`);
 
         // Verificar se o parâmetro está presente e é válido
-        if (!pastaQuadrinho || pastaQuadrinho.includes('/')) {
+        if (!pastaQuadrinho || pastaQuadrinho.includes('/') || pastaQuadrinho.includes('://')) {
             throw new Error('Nome do quadrinho inválido ou não especificado na URL.');
         }
 
@@ -49,7 +49,6 @@ async function carregarQuadrinho() {
         esconderSpinner();
     }
 }
-
 async function carregarPaginas(pasta) {
     const paginas = [];
 
