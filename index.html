@@ -3,36 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leitor de Quadrinhos</title>
+    <title>Comics Reader</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
-        <h1 id="titulo-quadrinho"></h1>
-        <button id="toggle-sidebar">Mostrar/Ocultar Lista</button>
+        <h1>Comics Reader</h1>
+        <button id="theme-toggle">Toggle Theme</button>
     </header>
 
-    <div class="container">
-        <!-- Left Side: Full-page view -->
-        <div class="full-page-view">
-            <img id="comic-page" src="" alt="Página" class="comic-page">
-        </div>
+    <!-- Carrossel de Capas -->
+    <section class="carrossel">
+        <div class="carrossel-container" id="carrossel-container"></div>
+        <button class="carrossel-btn prev" onclick="moverCarrossel(-1)">&#10094;</button>
+        <button class="carrossel-btn next" onclick="moverCarrossel(1)">&#10095;</button>
+        <div class="carrossel-dots"></div>
+    </section>
 
-        <!-- Middle: Interactive zoom area -->
-        <div class="zoom-area">
-            <div class="zoom-box"></div>
-        </div>
+    <!-- Thumbnails dos Quadrinhos -->
+    <section class="thumbnails">
+        <h2>Quadrinhos Disponíveis</h2>
+        <div class="thumbnails-container" id="thumbnails-container"></div>
+    </section>
 
-        <!-- Right Side: Vertical scrollable list -->
-        <div class="sidebar" id="sidebar">
-            <div class="sidebar-content" id="sidebar-content"></div>
-        </div>
-    </div>
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="spinner"></div>
 
     <footer>
         <p>&copy; 2025 Comics Reader</p>
     </footer>
 
-    <script src="leitor.js"></script>
+    <script src="scripts.js"></script>
 </body>
 </html>
