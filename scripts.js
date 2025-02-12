@@ -11,21 +11,15 @@ async function carregarQuadrinhos() {
         const text = await response.text();
         const parser = new DOMParser();
         const htmlDoc = parser.parseFromString(text, 'text/html');
+        
+        // Fix: Ensure the hrefs are correctly parsed and resolve relative paths
         const folders = Array.from(htmlDoc.querySelectorAll('a'))
             .map(link => link.href)
             .filter(href => href.endsWith('/')) // Filtra apenas pastas
-            .map(href => href.replace('/quadrinhos/', '').replace('/', '')) // Extrai o nome da pasta
+            .map(href => href.split('/').pop()) // Extract the folder name
             .filter(folder => !folder.includes('://')); // Filtra URLs inválidas
 
         console.log('Pastas de quadrinhos encontradas:', folders);
-
-        // Verifique se as pastas de quadrinhos estão acessíveis
-        for (const folder of folders) {
-            console.log(`Pasta encontrada: ${folder}`);
-            const infoPath = `quadrinhos/${folder}/info.json`;
-            const capaPath = await detectImageFormat(`quadrinhos/${folder}/capa`);
-            console.log(`Info JSON: ${infoPath}, Capa: ${capaPath}`);
-        }
 
         // Carregar os dados de cada quadrinho
         const quadrinhos = await Promise.all(folders.map(async (pasta) => {
@@ -46,6 +40,7 @@ async function carregarQuadrinhos() {
     }
 }
 
+// Função para detectar o formato da imagem (jpg, png, etc.)
 async function detectImageFormat(basePath) {
     const formats = ['.jpg', '.png', '.jpeg']; // Adicione mais formatos se necessário
     for (const format of formats) {
