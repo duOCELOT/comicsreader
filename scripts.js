@@ -14,7 +14,8 @@ async function carregarQuadrinhos() {
         const folders = Array.from(htmlDoc.querySelectorAll('a'))
             .map(link => link.href)
             .filter(href => href.endsWith('/')) // Filtra apenas pastas
-            .map(href => href.replace('/quadrinhos/', '').replace('/', '')); // Extrai o nome da pasta
+            .map(href => href.replace('/quadrinhos/', '').replace('/', '')) // Extrai o nome da pasta
+            .filter(folder => !folder.includes('://')); // Filtra URLs inválidas
 
         console.log('Pastas de quadrinhos encontradas:', folders);
 
@@ -81,7 +82,7 @@ function gerarThumbnails(quadrinhos) {
 
 // Função para abrir um quadrinho
 function abrirQuadrinho(pasta) {
-    window.location.href = `leitor.html?quadrinhos=${pasta}`;
+    window.location.href = `leitor.html?quadrinho=${pasta}`;
 }
 
 // Funções para o loading spinner
