@@ -6,18 +6,18 @@ async function carregarQuadrinhos() {
     mostrarSpinner();
 
     try {
-        // Buscar a lista de pastas de quadrinhos
+        // Buscar a lista de pastas de quadrinhos dentro de /quadrinhos/
         const response = await fetch('quadrinhos/');
         const text = await response.text();
         const parser = new DOMParser();
         const htmlDoc = parser.parseFromString(text, 'text/html');
         
-        // Fix: Ensure the hrefs are correctly parsed and resolve relative paths
+        // Extrair os nomes das pastas de quadrinhos
         const folders = Array.from(htmlDoc.querySelectorAll('a'))
             .map(link => link.href)
             .filter(href => href.endsWith('/')) // Filtra apenas pastas
-            .map(href => href.split('/').pop()) // Extract the folder name
-            .filter(folder => !folder.includes('://')); // Filtra URLs inválidas
+            .map(href => href.split('/').slice(-2, -1)[0]) // Extrai corretamente os nomes das pastas
+            .filter(folder => folder); // Remove qualquer valor inválido
 
         console.log('Pastas de quadrinhos encontradas:', folders);
 
