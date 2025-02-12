@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    carregarQuadrinho(); // Call the function once when the DOM is loaded
+    carregarQuadrinho();
     setupZoom();
     setupSidebar();
 });
@@ -10,15 +10,28 @@ async function carregarQuadrinho() {
     try {
         const params = new URLSearchParams(window.location.search);
         const pastaQuadrinho = params.get('quadrinho');
+        console.log(`Carregando quadrinho: ${pastaQuadrinho}`);
+
+        if (!pastaQuadrinho) {
+            throw new Error('Nenhum quadrinho especificado na URL.');
+        }
 
         // Carregar informações do quadrinho
         const infoPath = `quadrinhos/${pastaQuadrinho}/info.json`;
+        console.log(`Carregando info.json: ${infoPath}`);
         const response = await fetch(infoPath);
+
+        if (!response.ok) {
+            throw new Error(`Erro ao carregar info.json: ${response.status} ${response.statusText}`);
+        }
+
         const data = await response.json();
+        console.log('Info carregada:', data);
         document.getElementById('titulo-quadrinho').textContent = data.titulo;
 
         // Carregar páginas do quadrinho
         const paginas = await carregarPaginas(pastaQuadrinho);
+        console.log('Páginas carregadas:', paginas);
 
         // Exibir a primeira página
         const comicPage = document.getElementById('comic-page');
@@ -64,12 +77,16 @@ async function carregarSidebar() {
             .filter(href => href.endsWith('/')) // Filtra apenas pastas
             .map(href => href.replace('/quadrinhos/', '').replace('/', '')); // Extrai o nome da pasta
 
+        console.log('Pastas de quadrinhos encontradas:', folders);
+
         // Carregar os dados de cada quadrinho
         const quadrinhos = await Promise.all(folders.map(async (pasta) => {
             const infoPath = `quadrinhos/${pasta}/info.json`;
             const capaPath = await detectImageFormat(`quadrinhos/${pasta}/capa`);
             return { pasta, capa: capaPath, info: infoPath };
         }));
+
+        console.log('Quadrinhos carregados:', quadrinhos);
 
         // Exibir os quadrinhos na sidebar
         const sidebarContent = document.getElementById('sidebar-content');
