@@ -1,37 +1,63 @@
-async function listarQuadrinhos() {
+// Lista de quadrinhos (subpastas dentro de "quadrinhos")
+const quadrinhos = [
+    {
+        pasta: 'quadrinho1',
+        capa: 'quadrinhos/quadrinho1/capa.jpg', // ou capa.png
+        info: 'quadrinhos/quadrinho1/info.json'
+    },
+    {
+        pasta: 'quadrinho2',
+        capa: 'quadrinhos/quadrinho2/capa.jpg', // ou capa.png
+        info: 'quadrinhos/quadrinho2/info.json'
+    },
+    // Adicione mais quadrinhos conforme necessário
+];
+
+// Função para carregar os dados de um quadrinho
+async function carregarQuadrinho(quadrinho) {
     try {
-        const response = await fetch("pages.json");
-        if (!response.ok) throw new Error(`Erro ${response.status}: Não foi possível carregar os quadrinhos`);
-
-        const quadrinhos = await response.json();
-        gerarCarrossel(quadrinhos);
+        const response = await fetch(quadrinho.info);
+        const data = await response.json();
+        return { ...quadrinho, ...data };
     } catch (error) {
-        console.error("Erro ao listar quadrinhos:", error);
-        console.warn("Usando dados locais como fallback...");
-
-        // Fallback com quadrinhos locais caso o JSON falhe
-        const quadrinhosLocais = [
-            { nome: "Quadrinho 1", capa: "img/quadrinho1.jpg", descricao: "Descrição do quadrinho 1" },
-            { nome: "Quadrinho 2", capa: "img/quadrinho2.jpg", descricao: "Descrição do quadrinho 2" }
-        ];
-        gerarCarrossel(quadrinhosLocais);
+        console.error(`Erro ao carregar o quadrinho ${quadrinho.pasta}:`, error);
+        return null;
     }
 }
 
+// Função para gerar o carrossel
 function gerarCarrossel(quadrinhos) {
-    const container = document.getElementById("carrossel");
-    if (!container) {
-        console.error("Elemento #carrossel não encontrado no HTML");
-        return;
-    }
-
-    container.innerHTML = quadrinhos.map(q => `
-        <div class="quadrinho">
-            <img src="${q.capa}" alt="${q.nome}">
-            <h3>${q.nome}</h3>
-            <p>${q.descricao}</p>
+    const carrosselContainer = document.getElementById('carrossel-container');
+    carrosselContainer.innerHTML = quadrinhos.map((quadrinho, index) => `
+        <div class="carrossel-item" data-index="${index}">
+            <img src="${quadrinho.capa}" alt="${quadrinho.titulo}">
         </div>
-    `).join("\n");
+    `).join('');
 }
 
-document.addEventListener("DOMContentLoaded", listarQuadrinhos);
+// Função para gerar os thumbnails
+function gerarThumbnails(quadrinhos) {
+    const thumbnailsContainer = document.getElementById('thumbnails-container');
+    thumbnailsContainer.innerHTML = quadrinhos.map((quadrinho, index) => `
+        <div class="thumbnail-item" data-index="${index}">
+            <img src="${quadrinho.capa}" alt="${quadrinho.titulo}" onclick="abrirQuadrinho('${quadrinho.pasta}')">
+            <p>${quadrinho.titulo}</p>
+        </div>
+    `).join('');
+}
+
+// Função para abrir um quadrinho
+function abrirQuadrinho(pasta) {
+    window.location.href = `leitor.html?quadrinho=${pasta}`;
+}
+
+// Função principal para carregar a página
+async function carregarPagina() {
+    const quadrinhosCarregados = await Promise.all(quadrinhos.map(carregarQuadrinho));
+    const quadrinhosValidos = quadrinhosCarregados.filter(q => q !== null); // Filtra quadrinhos válidos
+    gerarCarrossel(quadrinhosValidos);
+    gerarThumbnails(quadrinhosValidos);
+}
+
+// Inicializar
+carregarPagina();

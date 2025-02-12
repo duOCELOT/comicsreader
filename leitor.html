@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,20 +7,18 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="loading-spinner" style="display: none;">Carregando...</div>
-    <div id="comic-reader-container"></div>
+    <header>
+        <h1 id="titulo-quadrinho"></h1>
+    </header>
 
-    <script src="scripts.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            const params = new URLSearchParams(window.location.search);
-            const quadrinho = params.get('quadrinho');
-            if (quadrinho) {
-                await carregarQuadrinho(quadrinho);
-            } else {
-                alert('Quadrinho não encontrado!');
-            }
-        });
-    </script>
+    <section class="leitor">
+        <div id="paginas-container"></div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Comics Reader</p>
+    </footer>
+
+    <script src="leitor.js"></script>
 </body>
 </html>
