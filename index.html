@@ -9,6 +9,7 @@
 <body>
     <header>
         <h1>Comics Reader</h1>
+        <button id="theme-toggle">Toggle Theme</button>
     </header>
 
     <!-- Carrossel de Capas -->
@@ -16,6 +17,7 @@
         <div class="carrossel-container" id="carrossel-container"></div>
         <button class="carrossel-btn prev" onclick="moverCarrossel(-1)">&#10094;</button>
         <button class="carrossel-btn next" onclick="moverCarrossel(1)">&#10095;</button>
+        <div class="carrossel-dots"></div>
     </section>
 
     <!-- Thumbnails dos Quadrinhos -->
@@ -24,8 +26,11 @@
         <div class="thumbnails-container" id="thumbnails-container"></div>
     </section>
 
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="spinner"></div>
+
     <footer>
-        <p>&copy; 2026 Comics Reader</p>
+        <p>&copy; 2023 Comics Reader</p>
     </footer>
 
     <script src="scripts.js"></script>
