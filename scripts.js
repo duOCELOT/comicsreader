@@ -1,23 +1,13 @@
-// scripts.js atualizado
-async function carregarQuadrinhos() {
+async function listarQuadrinhos() {
     try {
-        const response = await fetch("list.json");
+        const response = await fetch("pages.json");
         if (!response.ok) throw new Error("Erro ao acessar a pasta de quadrinhos");
+
         const quadrinhos = await response.json();
         gerarCarrossel(quadrinhos);
     } catch (error) {
-        console.error("Erro ao carregar quadrinhos:", error);
+        console.error("Erro ao listar quadrinhos:", error);
     }
-}
-
-async function detectImageFormat(basePath) {
-    const formatos = ["jpg", "png", "jpeg"];
-    for (let ext of formatos) {
-        const response = await fetch(`${basePath}.${ext}`);
-        if (response.ok) return `${basePath}.${ext}`;
-    }
-    console.warn("Nenhuma imagem encontrada para:", basePath);
-    return "placeholder.jpg";
 }
 
 function gerarCarrossel(quadrinhos) {
@@ -26,7 +16,7 @@ function gerarCarrossel(quadrinhos) {
         console.error("Elemento #carrossel não encontrado no HTML");
         return;
     }
-    
+
     container.innerHTML = quadrinhos.map(q => `
         <div class="quadrinho">
             <img src="${q.capa}" alt="${q.nome}">
@@ -36,4 +26,4 @@ function gerarCarrossel(quadrinhos) {
     `).join("\n");
 }
 
-document.addEventListener("DOMContentLoaded", carregarQuadrinhos);
+document.addEventListener("DOMContentLoaded", listarQuadrinhos);

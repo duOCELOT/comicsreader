@@ -1,20 +1,27 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quadrinhos</title>
+    <title>Leitor de Quadrinhos</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Quadrinhos</h1>
-    <div id="comic-list"></div>
+    <header>
+        <h1>Leitor de Quadrinhos</h1>
+    </header>
     
+    <main>
+        <section id="carrossel-container">
+            <h2>Quadrinhos Disponíveis</h2>
+            <div id="carrossel"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 ComicsReader</p>
+    </footer>
+
     <script src="scripts.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            await listarQuadrinhos();
-        });
-    </script>
 </body>
 </html>

@@ -1,34 +1,54 @@
-body {
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
     font-family: Arial, sans-serif;
-    margin: 20px;
+}
+
+body {
+    background-color: #1e1e1e;
+    color: #fff;
     text-align: center;
 }
 
-h1 {
+header {
+    background-color: #333;
+    padding: 15px;
     font-size: 24px;
-    margin-bottom: 20px;
 }
 
-#comic-list {
+main {
+    padding: 20px;
+}
+
+#carrossel-container {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+}
+
+#carrossel {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
+    overflow-x: auto;
+    gap: 15px;
+    padding: 10px;
 }
 
-.comic-card {
-    border: 1px solid #ccc;
+.quadrinho {
+    background: #292929;
     padding: 10px;
-    width: 200px;
+    border-radius: 10px;
+    min-width: 150px;
     text-align: center;
 }
 
-.comic-card img {
+.quadrinho img {
     width: 100%;
-    height: auto;
+    border-radius: 5px;
 }
 
-#comic-reader-container img {
-    width: 80%;
-    margin: 10px 0;
+footer {
+    background: #333;
+    padding: 10px;
+    margin-top: 20px;
 }
