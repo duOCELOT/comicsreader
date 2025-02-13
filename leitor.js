@@ -109,16 +109,24 @@ function setupZoom() {
             const rect = comicPage.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
+
+            // Ajusta o zoom para seguir o mouse
             zoomBox.style.left = `${x - 50}px`;
             zoomBox.style.top = `${y - 50}px`;
+
+            // Aplica o zoom na imagem
+            comicPage.style.transformOrigin = `${x}px ${y}px`;
+            comicPage.style.transform = 'scale(2)'; // Aumenta a imagem em 2x
+        });
+
+        comicPage.addEventListener('mouseleave', () => {
+            // Remove o zoom quando o mouse sai da imagem
+            comicPage.style.transform = 'scale(1)';
+            document.querySelector('.zoom-area').style.display = 'none';
         });
 
         comicPage.addEventListener('mouseenter', () => {
             document.querySelector('.zoom-area').style.display = 'block';
-        });
-
-        comicPage.addEventListener('mouseleave', () => {
-            document.querySelector('.zoom-area').style.display = 'none';
         });
     }
 }
