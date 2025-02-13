@@ -162,26 +162,3 @@ footer {
     width: 100%;
     bottom: 0;
 }
-
-.leitor {
-    max-width: 100%;
-    overflow-x: auto;
-    padding: 20px;
-    text-align: center;
-}
-
-/* Comic Page Styles */
-.comic-page {
-    max-width: 100%;
-    height: auto;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-/* Thumbnail and Carousel Image Styles */
-.thumbnail-image, .carrossel-image {
-    max-width: 100%;
-    height: auto;
-    border-radius: 5px;
-}

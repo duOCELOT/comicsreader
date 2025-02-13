@@ -9,14 +9,28 @@
 <body>
     <header>
         <h1 id="titulo-quadrinho"></h1>
+        <button id="toggle-sidebar">Mostrar/Ocultar Lista</button>
     </header>
 
-    <section class="leitor">
-        <div id="paginas-container"></div>
-    </section>
+    <div class="container">
+        <!-- Left Side: Full-page view -->
+        <div class="full-page-view">
+            <img id="comic-page" src="" alt="Página" class="comic-page">
+        </div>
+
+        <!-- Middle: Interactive zoom area -->
+        <div class="zoom-area">
+            <div class="zoom-box"></div>
+        </div>
+
+        <!-- Right Side: Vertical scrollable list -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-content" id="sidebar-content"></div>
+        </div>
+    </div>
 
     <footer>
-        <p>&copy; 2025 Comics Reader</p>
+        <p>&copy; 2023 Comics Reader</p>
     </footer>
 
     <script src="leitor.js"></script>

@@ -1,4 +1,7 @@
-// Função para carregar todos os quadrinhos
+document.addEventListener('DOMContentLoaded', () => {
+    carregarQuadrinhos();
+});
+
 async function carregarQuadrinhos() {
     mostrarSpinner();
 
@@ -11,13 +14,14 @@ async function carregarQuadrinhos() {
         const folders = Array.from(htmlDoc.querySelectorAll('a'))
             .map(link => link.href)
             .filter(href => href.endsWith('/')) // Filtra apenas pastas
-            .map(href => href.replace('/quadrinhos/', '').replace('/', '')); // Extrai o nome da pasta
+            .map(href => href.replace('/quadrinhos/', '').replace('/', '')) // Extrai o nome da pasta
+            .filter(folder => !folder.includes('://')); // Filtra URLs inválidas
 
         console.log('Pastas de quadrinhos encontradas:', folders);
 
         // Carregar os dados de cada quadrinho
         const quadrinhos = await Promise.all(folders.map(async (pasta) => {
-            const infoPath = getCacheBustingUrl(`quadrinhos/${pasta}/info.json`);
+            const infoPath = `quadrinhos/${pasta}/info.json`;
             const capaPath = await detectImageFormat(`quadrinhos/${pasta}/capa`);
             return { pasta, capa: capaPath, info: infoPath };
         }));
@@ -38,7 +42,7 @@ async function carregarQuadrinhos() {
 async function detectImageFormat(basePath) {
     const formats = ['.jpg', '.png', '.jpeg']; // Adicione mais formatos se necessário
     for (const format of formats) {
-        const imgPath = getCacheBustingUrl(`${basePath}${format}`);
+        const imgPath = `${basePath}${format}`;
         const img = new Image();
         img.src = imgPath;
 
@@ -81,20 +85,17 @@ function abrirQuadrinho(pasta) {
     window.location.href = `leitor.html?quadrinho=${pasta}`;
 }
 
-// Função para adicionar cache-busting
-function getCacheBustingUrl(url) {
-    const timestamp = new Date().getTime(); // Unique timestamp
-    return `${url}?v=${timestamp}`;
-}
-
 // Funções para o loading spinner
 function mostrarSpinner() {
-    document.getElementById('loading-spinner').style.display = 'block';
+    const spinner = document.getElementById('loading-spinner');
+    if (spinner) {
+        spinner.style.display = 'block';
+    }
 }
 
 function esconderSpinner() {
-    document.getElementById('loading-spinner').style.display = 'none';
+    const spinner = document.getElementById('loading-spinner');
+    if (spinner) {
+        spinner.style.display = 'none';
+    }
 }
-
-// Inicializar
-carregarQuadrinhos();
