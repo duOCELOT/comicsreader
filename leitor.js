@@ -137,15 +137,12 @@ async function detectImageFormat(basePath) {
     const formats = ['.jpg', '.png', '.jpeg'];
     for (const format of formats) {
         const imgPath = `${basePath}${format}`;
-        const img = new Image();
-        img.src = imgPath;
-
-        const exists = await new Promise((resolve) => {
-            img.onload = () => resolve(imgPath);
-            img.onerror = () => resolve(null);
-        });
-
-        if (exists) return exists;
+        try {
+            const response = await fetch(imgPath, { method: 'HEAD' });
+            if (response.ok) return imgPath;
+        } catch (error) {
+            console.error(`Erro ao verificar imagem: ${imgPath}`, error);
+        }
     }
     return null;
 }
@@ -158,4 +155,15 @@ function mostrarSpinner() {
 function esconderSpinner() {
     const spinner = document.getElementById('loading-spinner');
     if (spinner) spinner.style.display = 'none';
+}
+
+async function carregarPaginas(pasta) {
+    const paginas = [];
+    for (let i = 1; i <= 100; i++) { // Limite de 100 páginas por quadrinho
+        const paginaBase = `quadrinhos/${pasta}/pag (${i})`;
+        const paginaPath = await detectImageFormat(paginaBase);
+        if (paginaPath) paginas.push(paginaPath);
+        else break;
+    }
+    return paginas;
 }
