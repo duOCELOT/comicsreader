@@ -1,32 +1,22 @@
 document.addEventListener('DOMContentLoaded', () => {
     carregarQuadrinhos();
+    setupThemeToggle();
 });
 
 async function carregarQuadrinhos() {
     mostrarSpinner();
 
     try {
-        // Buscar a lista de pastas de quadrinhos
-        const response = await fetch('quadrinhos/');
-        const text = await response.text();
-        const parser = new DOMParser();
-        const htmlDoc = parser.parseFromString(text, 'text/html');
-        const folders = Array.from(htmlDoc.querySelectorAll('a'))
-            .map(link => link.href)
-            .filter(href => href.endsWith('/')) // Filtra apenas pastas
-            .map(href => href.replace('/quadrinhos/', '').replace('/', '')) // Extrai o nome da pasta
-            .filter(folder => !folder.includes('://')); // Filtra URLs inválidas
-
-        console.log('Pastas de quadrinhos encontradas:', folders);
-
-        // Carregar os dados de cada quadrinho
-        const quadrinhos = await Promise.all(folders.map(async (pasta) => {
+        // Carregar a lista de quadrinhos
+        const response = await fetch('comics-list.json');
+        const data = await response.json();
+        const quadrinhos = await Promise.all(data.quadrinhos.map(async (pasta) => {
             const infoPath = `quadrinhos/${pasta}/info.json`;
+            const infoResponse = await fetch(infoPath);
+            const info = await infoResponse.json();
             const capaPath = await detectImageFormat(`quadrinhos/${pasta}/capa`);
-            return { pasta, capa: capaPath, info: infoPath };
+            return { pasta, capa: capaPath, info };
         }));
-
-        console.log('Quadrinhos carregados:', quadrinhos);
 
         // Gerar o carrossel e os thumbnails
         gerarCarrossel(quadrinhos);
@@ -38,9 +28,38 @@ async function carregarQuadrinhos() {
     }
 }
 
-// Função para detectar o formato da imagem (jpg, png, etc.)
+function gerarCarrossel(quadrinhos) {
+    const carrosselContainer = document.getElementById('carrossel-container');
+    carrosselContainer.innerHTML = quadrinhos.map((quadrinho, index) => `
+        <div class="carrossel-item" data-index="${index}">
+            <img src="${quadrinho.capa}" alt="${quadrinho.info.name}" class="carrossel-image">
+        </div>
+    `).join('');
+}
+
+function gerarThumbnails(quadrinhos) {
+    const thumbnailsContainer = document.getElementById('thumbnails-container');
+    thumbnailsContainer.innerHTML = quadrinhos.map((quadrinho, index) => `
+        <div class="thumbnail-item" data-index="${index}">
+            <img src="${quadrinho.capa}" alt="${quadrinho.info.name}" onclick="abrirQuadrinho('${quadrinho.pasta}')" class="thumbnail-image">
+            <p>${quadrinho.info.name}</p>
+        </div>
+    `).join('');
+}
+
+function abrirQuadrinho(pasta) {
+    window.location.href = `leitor.html?quadrinho=${pasta}`;
+}
+
+function setupThemeToggle() {
+    const toggleButton = document.getElementById('theme-toggle');
+    toggleButton.addEventListener('click', () => {
+        document.body.classList.toggle('light-theme');
+    });
+}
+
 async function detectImageFormat(basePath) {
-    const formats = ['.jpg', '.png', '.jpeg']; // Adicione mais formatos se necessário
+    const formats = ['.jpg', '.png', '.jpeg'];
     for (const format of formats) {
         const imgPath = `${basePath}${format}`;
         const img = new Image();
@@ -51,51 +70,17 @@ async function detectImageFormat(basePath) {
             img.onerror = () => resolve(null);
         });
 
-        if (exists) {
-            return exists;
-        }
+        if (exists) return exists;
     }
-    console.error(`Nenhuma imagem encontrada para: ${basePath}`);
     return null;
 }
 
-// Função para gerar o carrossel
-function gerarCarrossel(quadrinhos) {
-    const carrosselContainer = document.getElementById('carrossel-container');
-    carrosselContainer.innerHTML = quadrinhos.map((quadrinho, index) => `
-        <div class="carrossel-item" data-index="${index}">
-            <img src="${quadrinho.capa}" alt="${quadrinho.titulo}" class="carrossel-image">
-        </div>
-    `).join('');
-}
-
-// Função para gerar os thumbnails
-function gerarThumbnails(quadrinhos) {
-    const thumbnailsContainer = document.getElementById('thumbnails-container');
-    thumbnailsContainer.innerHTML = quadrinhos.map((quadrinho, index) => `
-        <div class="thumbnail-item" data-index="${index}">
-            <img src="${quadrinho.capa}" alt="${quadrinho.titulo}" onclick="abrirQuadrinho('${quadrinho.pasta}')" class="thumbnail-image">
-            <p>${quadrinho.titulo}</p>
-        </div>
-    `).join('');
-}
-
-// Função para abrir um quadrinho
-function abrirQuadrinho(pasta) {
-    window.location.href = `leitor.html?quadrinho=${pasta}`;
-}
-
-// Funções para o loading spinner
 function mostrarSpinner() {
     const spinner = document.getElementById('loading-spinner');
-    if (spinner) {
-        spinner.style.display = 'block';
-    }
+    if (spinner) spinner.style.display = 'block';
 }
 
 function esconderSpinner() {
     const spinner = document.getElementById('loading-spinner');
-    if (spinner) {
-        spinner.style.display = 'none';
-    }
+    if (spinner) spinner.style.display = 'none';
 }
