@@ -162,3 +162,26 @@ footer {
     width: 100%;
     bottom: 0;
 }
+
+#previous, #next {
+    position: fixed;
+    bottom: 20px;
+    background-color: #555;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#previous {
+    left: 20px;
+}
+
+#next {
+    right: 20px;
+}
+
+#previous:hover, #next:hover {
+    background-color: #777;
+}

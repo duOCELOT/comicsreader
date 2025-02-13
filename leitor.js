@@ -2,7 +2,11 @@ document.addEventListener('DOMContentLoaded', () => {
     carregarQuadrinho();
     setupZoom();
     setupSidebar();
+    setupNavigation();
 });
+
+let currentPage = 0;
+let paginas = [];
 
 async function carregarQuadrinho() {
     mostrarSpinner();
@@ -19,9 +23,10 @@ async function carregarQuadrinho() {
         document.getElementById('titulo-quadrinho').textContent = info.name;
 
         // Carregar páginas do quadrinho
-        const paginas = await carregarPaginas(pastaQuadrinho);
-        const comicPage = document.getElementById('comic-page');
-        if (paginas.length > 0) comicPage.src = paginas[0];
+        paginas = await carregarPaginas(pastaQuadrinho);
+        if (paginas.length > 0) {
+            exibirPagina(currentPage);
+        }
 
         // Carregar lista de quadrinhos na sidebar
         carregarSidebar();
@@ -42,6 +47,33 @@ async function carregarPaginas(pasta) {
         else break;
     }
     return paginas;
+}
+
+function exibirPagina(index) {
+    const container = document.querySelector('.full-page-view');
+    container.innerHTML = ''; // Limpa o conteúdo anterior
+
+    const img = document.createElement('img');
+    img.src = paginas[index];
+    img.alt = `Página ${index + 1}`;
+    img.classList.add('comic-page');
+    container.appendChild(img);
+}
+
+function setupNavigation() {
+    document.getElementById('next').addEventListener('click', () => {
+        if (currentPage < paginas.length - 1) {
+            currentPage++;
+            exibirPagina(currentPage);
+        }
+    });
+
+    document.getElementById('previous').addEventListener('click', () => {
+        if (currentPage > 0) {
+            currentPage--;
+            exibirPagina(currentPage);
+        }
+    });
 }
 
 async function carregarSidebar() {
@@ -69,32 +101,36 @@ async function carregarSidebar() {
 }
 
 function setupZoom() {
-    const comicPage = document.getElementById('comic-page');
+    const comicPage = document.querySelector('.comic-page');
     const zoomBox = document.querySelector('.zoom-box');
 
-    comicPage.addEventListener('mousemove', (e) => {
-        const rect = comicPage.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        zoomBox.style.left = `${x - 50}px`;
-        zoomBox.style.top = `${y - 50}px`;
-    });
+    if (comicPage && zoomBox) {
+        comicPage.addEventListener('mousemove', (e) => {
+            const rect = comicPage.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            zoomBox.style.left = `${x - 50}px`;
+            zoomBox.style.top = `${y - 50}px`;
+        });
 
-    comicPage.addEventListener('mouseenter', () => {
-        document.querySelector('.zoom-area').style.display = 'block';
-    });
+        comicPage.addEventListener('mouseenter', () => {
+            document.querySelector('.zoom-area').style.display = 'block';
+        });
 
-    comicPage.addEventListener('mouseleave', () => {
-        document.querySelector('.zoom-area').style.display = 'none';
-    });
+        comicPage.addEventListener('mouseleave', () => {
+            document.querySelector('.zoom-area').style.display = 'none';
+        });
+    }
 }
 
 function setupSidebar() {
     const toggleButton = document.getElementById('toggle-sidebar');
     const sidebar = document.getElementById('sidebar');
-    toggleButton.addEventListener('click', () => {
-        sidebar.classList.toggle('hidden');
-    });
+    if (toggleButton && sidebar) {
+        toggleButton.addEventListener('click', () => {
+            sidebar.classList.toggle('hidden');
+        });
+    }
 }
 
 async function detectImageFormat(basePath) {
